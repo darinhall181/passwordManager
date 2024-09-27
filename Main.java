@@ -8,6 +8,12 @@ import java.util.Map;
 import java.util.Scanner;
 import javax.crypto.*;
 
+/*
+@author Wayzaro Ariella-yve Taylor CASEID: WYT2
+@author Apeksha Malik CASEID: ASM250
+@author Darin Hall CASEID: DAH181
+*/
+
 public class Main {
 
     // Static method to generate salt
@@ -42,7 +48,7 @@ public class Main {
                 encryptedToken = parts[1];
             }
 
-            // Loading the stored passwords into the HashMap
+            // **Load the stored passwords into the HashMap**
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(":");
@@ -72,7 +78,7 @@ public class Main {
         } else {
             // No password file exists; prompt for an initial password
             Scanner scanner = new Scanner(System.in);
-            System.out.println("No password file detected. Please enter an initial passcode:");
+            System.out.println("No password file detected. Please enter an initial passcode: ");
             String initialPasscode = scanner.nextLine();
 
             // Generate salt and create key
@@ -105,19 +111,39 @@ public class Main {
                 case "a": // Add a password
                     System.out.print("Enter label for password: ");
                     String label = scanner.nextLine();
-                    System.out.print("Enter password to store: ");
-                    String password = scanner.nextLine();
 
-                    // Encrypt the password and store it in the HashMap
-                    String addedPassword = encrypt.encrypt(password, key);
-                    passwordMap.put(label, addedPassword); // Add to HashMap
+                    if (passwordMap.containsKey(label)){
 
-                    // Append the label and encrypted password to the password file
-                    try (FileWriter fw = new FileWriter(passwordFile, true)) {
-                        fw.write(label + ":" + addedPassword + "\n");
-                    } catch (IOException e) {
-                        System.err.println("Error while adding the password: " + e.getMessage());
+                        System.out.print("Enter a new password to store: ");
+                        String updatedPassword = scanner.nextLine();
+
+                        // Encrypt the password and store it in the HashMap
+                        String addedPassword = encrypt.encrypt(updatedPassword, key);
+                        passwordMap.put(label, addedPassword); // Add to HashMap
+
+                        // Append the label and encrypted password to the password file
+                        try (FileWriter fw = new FileWriter(passwordFile, true)) {
+                            fw.write(label + ":" + addedPassword + "\n");
+                        } catch (IOException e) {
+                            System.err.println("Error while adding the password: " + e.getMessage());
+                        }
                     }
+                    else{
+                        System.out.print("Enter password to store: ");
+                        String password = scanner.nextLine();
+                        // Encrypt the password and store it in the HashMap
+                        String addedPassword = encrypt.encrypt(password, key);
+                        passwordMap.put(label, addedPassword); // Add to HashMap
+
+                        // Append the label and encrypted password to the password file
+                        try (FileWriter fw = new FileWriter(passwordFile, true)) {
+                            fw.write(label + ":" + addedPassword + "\n");
+                        } catch (IOException e) {
+                            System.err.println("Error while adding the password: " + e.getMessage());
+                        }
+                    }
+
+
                     System.out.println("Password added successfully.");
                     break;
 
@@ -129,7 +155,7 @@ public class Main {
                     if (passwordMap.containsKey(givenLabel)) {
                         String encryptedPassword = passwordMap.get(givenLabel);
                         String decryptedPassword = encrypt.decrypt(encryptedPassword, key);
-                        System.out.println("Password for " + givenLabel + ": " + decryptedPassword);
+                        System.out.println("\nPassword for " + givenLabel + ": " + decryptedPassword);
                     } else {
                         System.out.println("No password found for the given label.");
                     }
