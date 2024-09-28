@@ -18,10 +18,10 @@ public class encrypt {
     // PBKDF2 Key generation method
     public static SecretKey generateKey(String passcode, byte[] salt) throws Exception {
         int iterations = 1024;
-        int keyLength = 128;  // For AES-128
+        int keyLength = 256;  // For AES-256
 
         KeySpec spec = new PBEKeySpec(passcode.toCharArray(), salt, iterations, keyLength);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256"); //instance of sha256 encryption
         byte[] encoded = factory.generateSecret(spec).getEncoded();
         return new SecretKeySpec(encoded, "AES");
     }
@@ -54,7 +54,7 @@ public class encrypt {
         // Return the decrypted plaintext
         return new String(decryptedData);
     }
-
+/*
     public static void main(String[] args) throws Exception {
         String passcode = "mySecretPasscode";
 
@@ -65,7 +65,7 @@ public class encrypt {
         // Generate key using PBKDF2
         SecretKey key = generateKey(passcode, salt);
 
-        // Example token to encrypt
+        // Example token to encrypt (e.g., "spaghetti")
         String token = "spaghetti";
 
         // Encrypt the token
@@ -76,4 +76,5 @@ public class encrypt {
         String decryptedToken = decrypt(encryptedToken, key);
         System.out.println("Decrypted Token: " + decryptedToken);
     }
+ */
 }
